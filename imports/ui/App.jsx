@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { preloadCollections } from '../tools/generic/preloadCollections.js';
-import '../tools/custom/updatePortSize.js';
+import { debounce } from '/imports/tools/generic/utilities'
 import Splash from './components/splash.jsx'
 import Error from './components/error.jsx'
 import Frame from './components/frame/Frame.jsx'
@@ -11,7 +11,6 @@ import Frame from './components/frame/Frame.jsx'
 // have a reason and a means to add other paintings and their copies
 // HACK>>>
 Session.set("name", "revel")
-console.log("Session.get('portSize'):", Session.get('portSize'))
 
 const views = {
   Splash
@@ -21,7 +20,20 @@ const views = {
 
 
 export const App = () => {
+  const getPortSize = () => {
+    const width = window.innerWidth
+    const height = window.innerHeight
+    const ratio = width / height
+
+    return {
+      width
+    , height
+    , ratio
+    }
+  }
+
   const [ view, setView ] = useState("Splash")
+  const [ portSize, setPortSize] = useState(getPortSize())
 
   preloadCollections.then(
     result => setView("Frame")
@@ -29,11 +41,19 @@ export const App = () => {
     error => setView("Error")
   )
 
+  const updatePortSize = debounce(() => {
+    setPortSize(getPortSize())
+  })
+
+  window.onresize = updatePortSize
+
   const View = views[view]
 
   return (
     <div>
-      <View />
+      <View
+        portSize={portSize}
+      />
     </div>
   )
 };

@@ -121,6 +121,7 @@ export const debounce = (triggerHappy, timeOutDelay = 250) => {
 
   const hangFire = (...args) => { // rest syntax: args is an array
     const fireRound = () => {
+      clearTimeout(timeOut)
       triggerHappy(...args) // spread syntax:
                             // args array spread into discrete arguments
     }

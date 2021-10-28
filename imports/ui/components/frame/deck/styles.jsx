@@ -5,9 +5,7 @@
 import { Session } from 'meteor/session';
 import styled from 'styled-components'
 
-const getFrameRect = (imageSize) => {
-  const portSize = Session.get("portSize")
-
+const getFrameRect = (imageSize, portSize) => {
   if (!imageSize) {
     return ""
   }
@@ -31,7 +29,7 @@ const getFrameRect = (imageSize) => {
 
 export const StyledFrame = styled.div`
   position: relative;
-  ${props => getFrameRect(props.imageSize)}
+  ${props => getFrameRect(props.imageSize, props.portSize)}
   border: 10vmin solid black;
 
   & img.original {

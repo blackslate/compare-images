@@ -26,7 +26,7 @@ const Frame = (props) => {
   // , title:   "Revel in the Wild Joy"
   // }
 
-  const { name, copies, title } = props
+  const { name, copies, title, portSize } = props
   const original = `${name}/original.jpg`
   const copy = `${name}/copy/${copies[0]}.jpg`
   const copyAlt = title + " (Dafen copy)"
@@ -54,18 +54,19 @@ const Frame = (props) => {
         <StyledFrame
           id="frame"
           imageSize={imageSize}
+          portSize={portSize}
         >
           <img
-            class="original"
+            className="original"
             src={original}
             alt={title}
           />
           <img
-            class="copy"
+            className="copy"
             src={copy}
             alt={copyAlt}
           />
-          <div class="ring" />
+          <div className="ring" />
         </StyledFrame>
       )
     }
