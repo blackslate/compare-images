@@ -3,13 +3,16 @@
  */
 
 
-import React from 'react';
-import styled from 'styled-components'
+import React, { useState } from 'react';
+import { Session } from 'meteor/session';
+import { getImageSize } from '/imports/tools/generic/utilities'
 
 
-const StyledFrame = styled.div`
-`
+import {
+  StyledFrame
+} from './styles'
 
+let lastImageSize = {ratio: 0}
 
 const Frame = (props) => {
   // console.log("FrameCore props:", props)
@@ -28,14 +31,48 @@ const Frame = (props) => {
   const copy = `${name}/copy/${copies[0]}.jpg`
   const copyAlt = title + " (Dafen copy)"
 
-  return (
-    <StyledFrame
-      id="frame"
-    >
-      <img src={original} alt={title} />
-      <img src={copy} alt={copyAlt} />
-    </StyledFrame>
+  const [ imageSize, setImageSize ] = useState(0)
+
+  getImageSize(original).then(
+    result => {
+      if (result.ratio !== lastImageSize.ratio) {
+        lastImageSize = result
+        setImageSize(result)
+      }
+    }
+  ).catch(
+    error => console.log(error)
   )
+
+
+  const getFrame = () => {
+    if (imageSize === 0) {
+      return <div />
+
+    } else {
+      return (
+        <StyledFrame
+          id="frame"
+          imageSize={imageSize}
+        >
+          <img
+            class="original"
+            src={original}
+            alt={title}
+          />
+          <img
+            class="copy"
+            src={copy}
+            alt={copyAlt}
+          />
+          <div class="ring" />
+        </StyledFrame>
+      )
+    }
+  }
+
+  const frame = getFrame()
+  return frame
 }
 
 

@@ -8,11 +8,6 @@ import { collections
       , publishQueries
       } from './broker'
 
-if (Meteor.isClient) {
-window.Paintings = collections.Paintings
-}
-
- console.log("collections", Object.keys(collections))
 
 if (Meteor.isServer) {
   for (var name in collections) {

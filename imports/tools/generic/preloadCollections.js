@@ -1,5 +1,5 @@
 /**
- * /imports/ui/initialize.js
+ * /imports/tools/preloadCollections.js
  */
 
 
@@ -17,20 +17,7 @@ export const preloadCollections = new Promise((resolve, reject) => {
   const unReady = []
   let timeOut = -1 // set to positive integer at end of function
 
-  const runDebugTest = () => {
-    const Paintings = collections.Paintings
-    const painting = Paintings.findOne({created: 2011})
-    const _id = "617a8023a674a75b1c657b5d"
-    const success = painting._id = _id
-    console.log("painting:", painting, success.toString() === "617a8023a674a75b1c657b5d")
-
-    const wrapped = new Mongo.Collection.ObjectID(_id)
-    const selector = { wrapped }
-    const doublecheck = Paintings.findOne(selector)
-    console.log("doublecheck:", wrapped, selector, doublecheck)
-  }
-
-  const ready = (collectionName) => {
+    const ready = (collectionName) => {
     removeFrom(unReady, collectionName)
 
     // console.log("Collection is ready:", collectionName)
@@ -39,9 +26,6 @@ export const preloadCollections = new Promise((resolve, reject) => {
       if (timeOut) {
         // Leave this.timeOut as a non-zero value
         clearTimeout(timeOut)
-
-        runDebugTest()
-
         resolve()
       }
     }
