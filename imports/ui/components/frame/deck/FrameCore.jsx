@@ -5,8 +5,12 @@
 
 import React, { useState } from 'react';
 import { Session } from 'meteor/session';
-import { getImageSize } from '/imports/tools/generic/utilities'
-
+import {
+  getImageSize
+, setTrackedEvents
+, getPageXY
+} from '/imports/tools/generic/utilities'
+import Sight from './sight'
 
 import {
   StyledFrame
@@ -26,7 +30,7 @@ const Frame = (props) => {
   // , title:   "Revel in the Wild Joy"
   // }
 
-  const { name, copies, title, portSize } = props
+  const { name, copies, title, portSize, border } = props
   const original = `${name}/original.jpg`
   const copy = `${name}/copy/${copies[0]}.jpg`
   const copyAlt = title + " (Dafen copy)"
@@ -45,6 +49,28 @@ const Frame = (props) => {
   )
 
 
+  const startDraggingSight = (event) => {
+    const target = event.target.closest("svg")
+    const { left, top } = target.getBoundingClientRect()
+
+    const { x, y } = getPageXY(event)
+    const offset = { x: left - border - x, y: top - border - y }
+
+    const drop = () => {
+      setTrackedEvents(cancelTracking)
+      console.log("dropped");
+    }
+
+    const drag = (event) => {
+      const { x, y } = getPageXY(event)
+      target.style.left = ( offset.x + x ) + "px"
+      target.style.top =  ( offset.y + y ) + "px"
+    }
+
+    const cancelTracking = setTrackedEvents({ event, drag, drop })
+  }
+
+
   const getFrame = () => {
     if (imageSize === 0) {
       return <div />
@@ -55,6 +81,7 @@ const Frame = (props) => {
           id="frame"
           imageSize={imageSize}
           portSize={portSize}
+          border={border}
         >
           <img
             className="original"
@@ -66,7 +93,11 @@ const Frame = (props) => {
             src={copy}
             alt={copyAlt}
           />
-          <div className="ring" />
+          <Sight
+            className="sight"
+            fill="#c0f"
+            drag={startDraggingSight}
+          />
         </StyledFrame>
       )
     }

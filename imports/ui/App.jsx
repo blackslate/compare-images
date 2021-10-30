@@ -32,8 +32,20 @@ export const App = () => {
     }
   }
 
+  const getPortAndBorderSizes = () => {
+    const portSize = getPortSize()
+    const { width, height } = portSize
+    const border = Math.min(width, height) / 10
+    return {
+      portSize
+    , border
+    }
+  }
+
+  const sizes = getPortAndBorderSizes()
   const [ view, setView ] = useState("Splash")
-  const [ portSize, setPortSize] = useState(getPortSize())
+  const [ portSize, setPortSize] = useState(sizes.portSize)
+  const [ border, setBorder ] = useState(sizes.border)
 
   preloadCollections.then(
     result => setView("Frame")
@@ -42,7 +54,9 @@ export const App = () => {
   )
 
   const updatePortSize = debounce(() => {
-    setPortSize(getPortSize())
+    const sizes = getPortAndBorderSizes()
+    setPortSize(sizes.portSize)
+    setBorder(sizes.border)
   })
 
   window.onresize = updatePortSize
@@ -53,6 +67,7 @@ export const App = () => {
     <div>
       <View
         portSize={portSize}
+        border={border}
       />
     </div>
   )
