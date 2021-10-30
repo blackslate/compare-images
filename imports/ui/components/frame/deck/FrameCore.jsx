@@ -18,6 +18,7 @@ import {
 
 let lastImageSize = {ratio: 0}
 
+
 const Frame = (props) => {
   // console.log("FrameCore props:", props)
   // { _id:    Object { _str: "617a8023a674a75b1c657b5d" }
@@ -30,7 +31,7 @@ const Frame = (props) => {
   // , title:   "Revel in the Wild Joy"
   // }
 
-  const { name, copies, title, portSize, border } = props
+  const { name, copies, title, portSize, frameRatio, border } = props
   const original = `${name}/original.jpg`
   const copy = `${name}/copy/${copies[0]}.jpg`
   const copyAlt = title + " (Dafen copy)"
@@ -81,6 +82,7 @@ const Frame = (props) => {
           id="frame"
           imageSize={imageSize}
           portSize={portSize}
+          frameRatio={frameRatio}
           border={border}
         >
           <img

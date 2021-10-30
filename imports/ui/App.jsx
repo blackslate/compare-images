@@ -11,6 +11,8 @@ import Frame from './components/frame/Frame.jsx'
 // have a reason and a means to add other paintings and their copies
 // HACK>>>
 Session.set("name", "revel")
+const FRAME_RATIO = 0.9
+const BORDER_RATIO = (1 - FRAME_RATIO) / 2
 
 const views = {
   Splash
@@ -35,7 +37,7 @@ export const App = () => {
   const getPortAndBorderSizes = () => {
     const portSize = getPortSize()
     const { width, height } = portSize
-    const border = Math.min(width, height) / 10
+    const border = Math.min(width, height) * BORDER_RATIO
     return {
       portSize
     , border
@@ -68,6 +70,7 @@ export const App = () => {
       <View
         portSize={portSize}
         border={border}
+        frameRatio={FRAME_RATIO}
       />
     </div>
   )
