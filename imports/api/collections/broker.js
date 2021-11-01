@@ -8,17 +8,20 @@
 
 
 
- import { Mongo } from 'meteor/mongo';
- 
- 
- const Paintings = new Mongo.Collection('paintings')
- 
- 
- export const collections = {
-   Paintings
- }
- 
- 
- export const publishQueries = {
+import { Mongo } from 'meteor/mongo';
+
+
+const Paintings = new Mongo.Collection('paintings')
+const Groups = new Mongo.Collection('groups')
+
+
+export const collections = {
+  Paintings
+, Groups
+}
+
+
+export const publishQueries = {
   "Paintings": {}
- }
+, "Groups": {}
+}

@@ -4,7 +4,6 @@
 
 
 import React, { useState } from 'react';
-import { Session } from 'meteor/session';
 import {
   getImageSize
 , setTrackedEvents
@@ -21,20 +20,32 @@ let lastImageSize = {ratio: 0}
 
 const Frame = (props) => {
   // console.log("FrameCore props:", props)
-  // { _id:    Object { _str: "617a8023a674a75b1c657b5d" }
-  // , artist: "Andy Kehoe"
-  // , client: "James Newton"
-  // , copies:  Array [ "20211015101430" ]
+  // { _id:     Object { _str: "617a8023a674a75b1c657b5d" }
+  // , artist:  "Andy Kehoe"
+  // , client:  "James Newton"
+  // , copies:  [ "20211015101430.jpg" ]
   // , copyist: ""
   // , created: 2011
   // , name:    "revel"
   // , title:   "Revel in the Wild Joy"
+  //
+  // , border: 57
+  // , frameRatio: 0.9
+  // , portSize: { width: 1000, height: 800, ratio: 1.25}
+  // ,
+  // , copy: "20211015101430.jpg"
+  // , visualization: "invert"
   // }
 
-  const { name, copies, title, portSize, frameRatio, border } = props
+  const { name, title
+        , portSize, frameRatio, border
+        , copy
+        , visualization
+        } = props
   const original = `${name}/original.jpg`
-  const copy = `${name}/copy/${copies[0]}.jpg`
+  const compare = `${name}/copy/${copy}`
   const copyAlt = title + " (Dafen copy)"
+  const copyClass = "copy " + visualization
 
   const [ imageSize, setImageSize ] = useState(0)
 
@@ -91,8 +102,8 @@ const Frame = (props) => {
             alt={title}
           />
           <img
-            className="copy"
-            src={copy}
+            className={copyClass}
+            src={compare}
             alt={copyAlt}
           />
           <Sight

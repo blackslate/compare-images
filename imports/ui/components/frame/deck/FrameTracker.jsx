@@ -6,31 +6,19 @@
 
  import { Session } from 'meteor/session'
  import collections from '/imports/api/collections/publisher'
- const { Paintings } = collections
+ const { Paintings, Groups } = collections
  
  
  
  export default class FrameTracker{
    getProps() {
-    const name = Session.get("name")
-    // const _id = Session.get("work")
-    // const _id = Session.get("artist")
-    // const _id = Session.get("client")
-    // const _id = Session.get("copyist")
-    // const _id = Session.get("copies")
+    const group = Session.get("group") // "test"
 
-    // console.log("name:", name)
+    const groupData = Groups.findOne({ group })
+    const { name, copy, visualization } = groupData
     const props = Paintings.findOne({ name })
-    // console.log("props:", props)
-
-    // const props = {
-    // _id
-    // , work
-    // , artist
-    // , client
-    // , copyist
-    // , copies
-    // }
+    props.copy = props.copies[copy]
+    props.visualization = visualization
 
     // console.log("props:", props)
 

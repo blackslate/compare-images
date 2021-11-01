@@ -3,21 +3,21 @@ import { preloadCollections } from '../tools/generic/preloadCollections.js';
 import { debounce } from '/imports/tools/generic/utilities'
 import Splash from './components/splash.jsx'
 import Error from './components/error.jsx'
-import Frame from './components/frame/Frame.jsx'
+import Viewer from './components/Viewer.jsx'
 
 // console.log("Frame:", Frame)
 // <<< HACK
 // Use default (one and only) _id from Paintings collection until we
 // have a reason and a means to add other paintings and their copies
 // HACK>>>
-Session.set("name", "revel")
+Session.set("group", "test")
 const FRAME_RATIO = 0.9
 const BORDER_RATIO = (1 - FRAME_RATIO) / 2
 
 const views = {
   Splash
 , Error
-, Frame
+, Viewer
 }
 
 
@@ -50,7 +50,7 @@ export const App = () => {
   const [ border, setBorder ] = useState(sizes.border)
 
   preloadCollections.then(
-    result => setView("Frame")
+    result => setView("Viewer")
   ).catch(
     error => setView("Error")
   )

@@ -46,7 +46,22 @@ export const StyledFrame = styled.div`
     top: 0;
     left: 0;
     width: 100%;
+  }
+
+  & img.copy.hide {
+    display: none;
+  }
+
+  & img.copy.see-through {
     opacity: 0.5;
+  }
+
+  & img.copy.invert {
+    mix-blend-mode: difference;
+  }
+
+  & img.copy.fade {
+    /* TODO */
   }
 
   & svg {
