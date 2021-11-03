@@ -6,7 +6,7 @@ import { Meteor } from 'meteor/meteor'
 import SimpleSchema from 'simpl-schema'
 
 import collections from '/imports/api/collections/publisher'
-const { Paintings } = collections
+const { Paintings, Groups } = collections
 
 
 
@@ -47,8 +47,59 @@ export const getPaintings = {
 }
 
 
+
+export const setCentreLock = {
+  name: "frame.setCentreLock"
+
+, call(centreLockData, callback) {
+    const options = {
+      returnStubValue: true
+    , throwStubExceptions: true
+    }
+
+    Meteor.apply(this.name, [centreLockData], options, callback)
+  }
+
+, validate(centreLockData) {
+    const centreSchema = new SimpleSchema({
+      centreH: Number
+    , centreV: Number
+    })
+
+    const _strSchema = new SimpleSchema({
+     _str: String,
+    });
+
+    new SimpleSchema({
+     _id:    _strSchema
+   , centre: centreSchema
+    }).validate(centreLockData)
+  }
+
+, run(centreLockData) {
+    const { _id, centre } = centreLockData
+    const select = { _id }
+    const update = { $set: { centre }}
+
+    const result = Groups.update(select, update)
+
+    // // <<< FOR DEBUGGING
+    // console.log(
+    //   "db.groups.update("
+    // + JSON.stringify(select) 
+    // + ", "
+    // + JSON.stringify(update)
+    // + ")\n*** { _str: \"...\"} should be ObjectID(\"...\") ***\n"
+    // + ">>> result:", result
+    // )
+    // // FOR DEBUGGING >>>
+  }
+}
+
+
 const methods = [
   getPaintings
+, setCentreLock
 ]
 
 

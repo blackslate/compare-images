@@ -8,8 +8,10 @@
  * and various client-side scripts.
  */
 
-import * as controls from '/imports/ui/components/controls/methods.js'
+ import * as frame from '/imports/ui/components/frame/methods.js'
+ import * as controls from '/imports/ui/components/controls/methods.js'
 
 export const methods = {
-  ...controls
+  ...frame
+, ...controls
 }

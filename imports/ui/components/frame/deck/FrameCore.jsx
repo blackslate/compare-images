@@ -11,15 +11,18 @@ import {
 } from '/imports/tools/generic/utilities'
 import Sight from './sight'
 
+import { setCentreLock } from '../methods.js'
+
 import {
   StyledFrame
 } from './styles'
 
-let lastImageSize = {ratio: 0}
+let lastName = 0
+const SIGHT_RATIO = 0.1
 
 
 const Frame = (props) => {
-  // console.log("FrameCore props:", props)
+  // console.log("props:", props)
   // { _id:     Object { _str: "617a8023a674a75b1c657b5d" }
   // , artist:  "Andy Kehoe"
   // , client:  "James Newton"
@@ -37,46 +40,135 @@ const Frame = (props) => {
   // , visualization: "invert"
   // }
 
-  const { name, title
-        , portSize, frameRatio, border
-        , copy
-        , visualization
+  const { portSize, frameRatio, border    // Set in App.jsx / resize
+        , name, title                     // Read from Paintings
+        , copy                            // Read from Paintings/Groups
+        , group_id, centre, visualization // Read from Groups
         } = props
+  const { centreH, centreV } = centre
   const original = `${name}/original.jpg`
   const compare = `${name}/copy/${copy}`
   const copyAlt = title + " (Dafen copy)"
-  const copyClass = "copy " + visualization
 
   const [ imageSize, setImageSize ] = useState(0)
+  const [ centring, setCentring] = useState(false)
+  
+  let dimensions = getDimensions(imageSize)
+  let sightData = getSightData(dimensions)
 
-  getImageSize(original).then(
-    result => {
-      if (result.ratio !== lastImageSize.ratio) {
-        lastImageSize = result
-        setImageSize(result)
+
+
+  function getDimensions (imageSize) {
+    let width  = 10
+    let height = 10
+
+    if (!imageSize) {
+      // This will only be true immediately after loading the app
+
+    } else {
+      if (imageSize.ratio > portSize.ratio) {
+        // Use maximum width and limit height
+        width = portSize.width * frameRatio,
+        height = width / imageSize.ratio
+      } else {
+        // Use maximum height and limit width
+        height = portSize.height * frameRatio
+        width = height * imageSize.ratio
       }
     }
-  ).catch(
-    error => console.log(error)
-  )
+
+    return {
+      height
+    , width
+    , border
+    }
+  }
+
+
+  function getSightData({ width, height }) {
+    const centreSize = Math.min(width, height) * SIGHT_RATIO 
+    const centreX = width * centreH - centreSize / 2
+    const centreY  = height * centreV - centreSize / 2
+
+    return {
+      centreX
+    , centreY
+    , centreSize
+    }
+  }
+
+
+  if (lastName !== name) {
+    getImageSize(original).then(
+      result => {
+        lastName = name
+        setImageSize(result)
+        dimensions = getDimensions(result)
+      }
+    ).catch(
+      error => console.log(error)
+    )
+  }
 
 
   const startDraggingSight = (event) => {
     const target = event.target.closest("svg")
-    const { left, top } = target.getBoundingClientRect()
+
+    setCentring(true)
+
+    let dragX
+    let dragY
+
+    // 
+    let {
+      left:   xMin
+    , top:    yMin
+    , right:  xMax
+    , bottom: yMax
+    } = target.parentNode.getBoundingClientRect()
+
+    const { left, top, width, height } = target.getBoundingClientRect()
+
+    xMin -= width / 2
+    yMin -= height / 2
+    xMax -= (border * 2 + width / 2)
+    yMax -= (border * 2 + height / 2)
+
+    console.log("xMax - xMin:", xMax - xMin)
+    console.log("yMax - yMin:", yMax - yMin)
+
 
     const { x, y } = getPageXY(event)
     const offset = { x: left - border - x, y: top - border - y }
 
-    const drop = () => {
-      setTrackedEvents(cancelTracking)
-      console.log("dropped");
-    }
-
     const drag = (event) => {
       const { x, y } = getPageXY(event)
-      target.style.left = ( offset.x + x ) + "px"
-      target.style.top =  ( offset.y + y ) + "px"
+      dragX = Math.max(xMin, Math.min(offset.x + x, xMax))
+      dragY = Math.max(yMin, Math.min(offset.y + y, yMax))
+      target.style.left = dragX + "px"
+      target.style.top =  dragY + "px"
+    }
+
+    const drop = () => {
+      setCentring(false)
+      setTrackedEvents(cancelTracking)
+
+      setTimeout(() => {
+        target.style.removeProperty("left")
+        target.style.removeProperty("top")
+      }, 100)
+
+      const centreH = (dragX - xMin) / dimensions.width // (xMax - xMin)
+      const centreV = (dragY - yMin) / dimensions.height // (yMax - yMin)
+      const centre = {
+        centreH
+      , centreV
+      }
+
+      setCentreLock.call({
+        _id: group_id
+      , centre
+      })
     }
 
     const cancelTracking = setTrackedEvents({ event, drag, drop })
@@ -86,34 +178,38 @@ const Frame = (props) => {
   const getFrame = () => {
     if (imageSize === 0) {
       return <div />
-
-    } else {
-      return (
-        <StyledFrame
-          id="frame"
-          imageSize={imageSize}
-          portSize={portSize}
-          frameRatio={frameRatio}
-          border={border}
-        >
-          <img
-            className="original"
-            src={original}
-            alt={title}
-          />
-          <img
-            className={copyClass}
-            src={compare}
-            alt={copyAlt}
-          />
-          <Sight
-            className="sight"
-            fill="#c0f"
-            drag={startDraggingSight}
-          />
-        </StyledFrame>
-      )
     }
+
+    const copyClass = "copy "
+                    + ( centring
+                      ? "hide"
+                      : visualization
+                      )
+
+    return (
+      <StyledFrame
+        id="frame"
+        {...dimensions}
+        {...sightData}
+      >
+        <img
+          className="original"
+          src={original}
+          alt={title}
+        />
+        <img
+          className={copyClass}
+          src={compare}
+          alt={copyAlt}
+        />
+        <Sight
+          className="sight"
+          fill="#000"
+          stroke="#fff"
+          drag={startDraggingSight}
+        />
+      </StyledFrame>
+    )
   }
 
   const frame = getFrame()

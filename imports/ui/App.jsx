@@ -11,7 +11,7 @@ import Viewer from './components/Viewer.jsx'
 // have a reason and a means to add other paintings and their copies
 // HACK>>>
 Session.set("group", "test")
-const FRAME_RATIO = 0.9
+const FRAME_RATIO = 0.8
 const BORDER_RATIO = (1 - FRAME_RATIO) / 2
 
 const views = {
@@ -23,8 +23,8 @@ const views = {
 
 export const App = () => {
   const getPortSize = () => {
-    const width = window.innerWidth
-    const height = window.innerHeight
+    const width = document.documentElement.clientWidth
+    const height = document.documentElement.clientHeight
     const ratio = width / height
 
     return {
@@ -38,6 +38,7 @@ export const App = () => {
     const portSize = getPortSize()
     const { width, height } = portSize
     const border = Math.min(width, height) * BORDER_RATIO
+    // console.log("border:", border, " BORDER_RATIO:",  BORDER_RATIO)
     return {
       portSize
     , border

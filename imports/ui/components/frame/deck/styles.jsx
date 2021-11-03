@@ -5,37 +5,15 @@
 import { Session } from 'meteor/session';
 import styled from 'styled-components'
 
-const getFrameRect = (imageSize, portSize, frameRatio, border) => {
-  if (!imageSize) {
-    return ""
-  }
-
-  let width
-    , height
-
-  if (imageSize.ratio > portSize.ratio) {
-    // Use maximum width and limit height
-    width = portSize.width * frameRatio,
-    height = width / imageSize.ratio
-  } else {
-    // Use maximum height and limit width
-    height = portSize.height * frameRatio
-    width = height * imageSize.ratio
-  }
-
-  return `
-  height: ${height}px;
-  width: ${width}px;
-  border ${border}px solid black;`
-}
 
 
 export const StyledFrame = styled.div`
   position: relative;
-  ${props => {
-    const { imageSize, portSize, frameRatio, border } = props
-    return getFrameRect(imageSize, portSize, frameRatio, border)
-  }}
+  ${props => `
+    width: ${props.width}px;
+    height: ${props.height}px;
+    border: ${props.border}px solid black;
+  `}
 
   & img.original {
     width: 100%;
@@ -66,9 +44,11 @@ export const StyledFrame = styled.div`
 
   & svg {
     position: absolute;
-    top: 45%;
-    left: 45%;
-    width: 10%;
-    height: 10%;
+    ${props => ` 
+      left: ${props.centreX}px;
+      top: ${props.centreY}px;
+      width: ${props.centreSize}px;
+      height: ${props.centreSize}px;
+    `}
   }
 `

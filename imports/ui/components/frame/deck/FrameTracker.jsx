@@ -15,9 +15,18 @@
     const group = Session.get("group") // "test"
 
     const groupData = Groups.findOne({ group })
-    const { name, copy, visualization } = groupData
+    const {
+      _id: group_id
+    , name
+    , copy
+    , visualization
+    , centre
+    } = groupData
+
     const props = Paintings.findOne({ name })
     props.copy = props.copies[copy]
+    props.group_id = group_id
+    props.centre = centre
     props.visualization = visualization
 
     // console.log("props:", props)

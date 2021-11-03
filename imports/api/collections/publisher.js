@@ -32,10 +32,10 @@ if (Meteor.isServer) {
     Meteor.publish(name, function public(caller, ...more) {
       // We need to use the classic function () syntax so that we can
       // use this to access the Meteor connection and use this.user_id
-   
+
       let items = collection.find(select) // (customSelect || select)
-   
-      // if (typeof caller === "string") {
+
+      if (typeof caller === "string") {
         console.log(
           "Publishing", collection._name, "for", caller, ...more
         )
@@ -44,8 +44,8 @@ if (Meteor.isServer) {
         // , collection.find(select).count()
         // , collection.find(select, { limit: 4 }).fetch()
         // )
-      // }
-    
+      }
+
       return items
     })
   }
@@ -53,4 +53,3 @@ if (Meteor.isServer) {
 
 
 export default collections
- 
