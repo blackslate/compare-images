@@ -86,14 +86,15 @@ const Frame = (props) => {
 
 
   function getSightData({ width, height }) {
-    const centreSize = Math.min(width, height) * SIGHT_RATIO 
-    const centreX = width * centreH - centreSize / 2
-    const centreY  = height * centreV - centreSize / 2
+    const size = Math.min(width, height) * SIGHT_RATIO 
+    const offset = size / 2
+    const left = width * centreH - offset
+    const top  = height * centreV - offset
 
     return {
-      centreX
-    , centreY
-    , centreSize
+      size
+    , left
+    , top
     }
   }
 

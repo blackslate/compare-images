@@ -44,11 +44,12 @@ export const StyledFrame = styled.div`
 
   & svg {
     position: absolute;
+    mix-blend-mode: difference;
     ${props => ` 
-      left: ${props.centreX}px;
-      top: ${props.centreY}px;
-      width: ${props.centreSize}px;
-      height: ${props.centreSize}px;
+      left: ${props.left}px;
+      top: ${props.top}px;
+      width: ${props.size}px;
+      height: ${props.size}px;
     `}
   }
 `
