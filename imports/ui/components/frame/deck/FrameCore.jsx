@@ -114,6 +114,8 @@ const Frame = (props) => {
 
   const startDraggingSight = (event) => {
     const target = event.target.closest("svg")
+    const scrollX = window.scrollX
+    const scrollY = window.scrollY
 
     setCentring(true)
 
@@ -128,16 +130,17 @@ const Frame = (props) => {
     , bottom: yMax
     } = target.parentNode.getBoundingClientRect()
 
-    const { left, top, width, height } = target.getBoundingClientRect()
+    let { left, top, width, height } = target.getBoundingClientRect()
+    left += scrollX
+    top += scrollY
 
-    xMin -= width / 2
-    yMin -= height / 2
-    xMax -= (border * 2 + width / 2)
-    yMax -= (border * 2 + height / 2)
+    xMin += (scrollX - width / 2)
+    yMin += (scrollY - height / 2)
+    xMax += (scrollX - (border * 2 + width / 2))
+    yMax += (scrollY - (border * 2 + height / 2))
 
-    console.log("xMax - xMin:", xMax - xMin)
-    console.log("yMax - yMin:", yMax - yMin)
-
+    // console.log("xMax - xMin:", xMax - xMin)
+    // console.log("yMax - yMin:", yMax - yMin)
 
     const { x, y } = getPageXY(event)
     const offset = { x: left - border - x, y: top - border - y }
