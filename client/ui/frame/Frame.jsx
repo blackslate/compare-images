@@ -5,13 +5,12 @@
 
 import React, { useState } from 'react';
 import {
-  getImageSize
-, setTrackedEvents
+  setTrackedEvents
 , getPageXY
 } from '/imports/tools/generic/utilities'
 import Sight from './sight'
 
-import { setCentreLock } from '../methods.js'
+import { setAnchorPoint } from '/imports/api/methods/frame.js'
 
 import {
   StyledFrame
@@ -22,93 +21,112 @@ const SIGHT_RATIO = 0.1
 
 
 const Frame = (props) => {
-  // console.log("props:", props)
-  // { _id:     Object { _str: "617a8023a674a75b1c657b5d" }
-  // , artist:  "Andy Kehoe"
-  // , client:  "James Newton"
-  // , copies:  [ "20211015101430.jpg" ]
+  // console.log("Frame props:", props)
+  
+  // { activeCustomArea: -1
+  // , anchorX: 0.5
+  // , anchorY: 0.5
+  // , artist: "Andy Kehoe"
+  // , border: 78.49999999999999
+  // , client: "James Newton"
+  // , copies: [
+  //     { file: "20211015101430.jpg"
+  //     , height:  2632
+  //     , width:   2608
+  //     , originX: 0.5
+  //     , originY: 0.5
+  //     , stretchBottom: 0
+  //     , stretchLeft:   0
+  //     , stretchRight:  0
+  //     , stretchTop:    0
+  //     }
+  //   ] 
+  // , copy: 0
+  // , copyData: {
+  //     file: "20211015101430.jpg"
+  //   , height:  2632
+  //   , width:   2608
+  //   , originX: 0.5
+  //   , originY: 0.5
+  //   , stretchBottom: 0
+  //   , stretchLeft:   0
+  //   , stretchRight:  0
+  //   , stretchTop:    0
+  //   }
   // , copyist: ""
   // , created: 2011
-  // , name:    "revel"
-  // , title:   "Revel in the Wild Joy"
-  //
-  // , border: 57
-  // , frameRatio: 0.9
-  // , portSize: { width: 1000, height: 800, ratio: 1.25}
-  // ,
-  // , copy: "20211015101430.jpg"
+  // , custom_areas: [{…}]
+  // , frameRatio: 0.8
+  // , group: "test"
+  // , group_id: ObjectID {_str: '617eb50e435874f0cd9a9028'}
+  // , height: 1841
+  // , lines: {left: 0, right: 0, top: 0, bottom: 0}
+  // , name: "revel"
+  // , painting_id: ObjectID {_str: '617a8023a674a75b1c657b5d'}
+  // , pilot: 0
+  // , portSize: {width: 785, height: 862, ratio: 0.9106728538283063}
+  // , title: "Revel in the Wild Joy"
   // , visualization: "invert"
+  // , width: 1838
+  // , zoom: 2
+  // , zoom_rect: {left: 0, right: 0, top: 0, bottom: 0}
   // }
 
-  const { portSize, frameRatio, border    // Set in App.jsx / resize
-        , name, title                     // Read from Paintings
-        , copy                            // Read from Paintings/Groups
-        , group_id, centre, visualization // Read from Groups
+  const { portSize, frameRatio, border         // Set in App.jsx/resize
+        , name, title, width, height, copyData // Read from Paintings
+        , group_id                             // Read from Groups
+        , anchorX, anchorY
+        , visualization
         } = props
-  const { centreH, centreV } = centre
+
   const original = `${name}/original.jpg`
-  const compare = `${name}/copy/${copy}`
+  const compare = `${name}/copy/${copyData.file}`
   const copyAlt = title + " (Dafen copy)"
 
-  const [ imageSize, setImageSize ] = useState(0)
   const [ centring, setCentring] = useState(false)
+  const [ zoom, setZoom ] = useState(2)
+  const [ scroll, setScroll ] = useState({ x: 0, y: 0 })
   
-  let dimensions = getDimensions(imageSize)
+  let dimensions = getDimensions()
   let sightData = getSightData(dimensions)
 
 
 
-  function getDimensions (imageSize) {
-    let width  = 10
-    let height = 10
+  function getDimensions () {
+    const imageRatio = width / height
 
-    if (!imageSize) {
-      // This will only be true immediately after loading the app
-
+    if (imageRatio > portSize.ratio) {
+      // Use maximum width and limit height
+      frameWidth = portSize.width * frameRatio,
+      frameHeight = frameWidth / imageRatio
     } else {
-      if (imageSize.ratio > portSize.ratio) {
-        // Use maximum width and limit height
-        width = portSize.width * frameRatio,
-        height = width / imageSize.ratio
-      } else {
-        // Use maximum height and limit width
-        height = portSize.height * frameRatio
-        width = height * imageSize.ratio
-      }
+      // Use maximum height and limit width
+      frameHeight = portSize.height * frameRatio
+      frameWidth = frameHeight * imageRatio
     }
+  
+
+    const displayWidth = 0
 
     return {
-      height
-    , width
+      frameHeight
+    , frameWidth
     , border
     }
   }
 
 
-  function getSightData({ width, height }) {
-    const size = Math.min(width, height) * SIGHT_RATIO 
+  function getSightData({ frameWidth, frameHeight }) {
+    const size = Math.min(frameWidth, frameHeight) * SIGHT_RATIO 
     const offset = size / 2
-    const left = width * centreH - offset
-    const top  = height * centreV - offset
+    const left = frameWidth * anchorX - offset
+    const top  = frameHeight * anchorY - offset
 
     return {
       size
     , left
     , top
     }
-  }
-
-
-  if (lastName !== name) {
-    getImageSize(original).then(
-      result => {
-        lastName = name
-        setImageSize(result)
-        dimensions = getDimensions(result)
-      }
-    ).catch(
-      error => console.log(error)
-    )
   }
 
 
@@ -139,9 +157,6 @@ const Frame = (props) => {
     xMax += (scrollX - (border * 2 + width / 2))
     yMax += (scrollY - (border * 2 + height / 2))
 
-    // console.log("xMax - xMin:", xMax - xMin)
-    // console.log("yMax - yMin:", yMax - yMin)
-
     const { x, y } = getPageXY(event)
     const offset = { x: left - border - x, y: top - border - y }
 
@@ -162,16 +177,13 @@ const Frame = (props) => {
         target.style.removeProperty("top")
       }, 100)
 
-      const centreH = (dragX - xMin) / dimensions.width // (xMax - xMin)
-      const centreV = (dragY - yMin) / dimensions.height // (yMax - yMin)
-      const centre = {
-        centreH
-      , centreV
-      }
+      const anchorX = (dragX - xMin) / dimensions.frameWidth
+      const anchorY = (dragY - yMin) / dimensions.frameHeight
 
-      setCentreLock.call({
+      setAnchorPoint.call({
         _id: group_id
-      , centre
+      , anchorX
+      , anchorY
       })
     }
 
@@ -180,10 +192,6 @@ const Frame = (props) => {
 
 
   const getFrame = () => {
-    if (imageSize === 0) {
-      return <div />
-    }
-
     const copyClass = "copy "
                     + ( centring
                       ? "hide"

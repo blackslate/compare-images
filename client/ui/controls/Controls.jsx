@@ -1,11 +1,12 @@
 /**
- * component_filename.jsx
+ * /imports/ui/components/controls/deck/ControlsCore.jsx
  */
 
 
 import React, { Component } from 'react';
 
 import Visualization from './visualization.jsx'
+import Adjustment from './adjustment.jsx'
 
 
 
@@ -37,6 +38,9 @@ const Controls = (props) => {
       id="controls"
     >
       <Visualization
+        {...props}
+      />
+      <Adjustment
         {...props}
       />
     </div>

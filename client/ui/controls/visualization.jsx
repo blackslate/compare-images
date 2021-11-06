@@ -2,14 +2,15 @@
  * imports/ui/components/controls/visualisation.jsx
  */
 
-/**
- * component_filename.jsx
- */
-
 
 import React, { Component } from 'react';
 import styled from 'styled-components'
-import { setVisualization } from '../methods';
+import RadioButton from './radiobutton'
+
+// import methods from '/imports/api/methods/broker.js';
+// const { setVisualization } = methods.methods
+import { setVisualization } from '/imports/api/methods/controls';
+
 
 
 const StyledVisualization = styled.fieldset`
@@ -21,24 +22,6 @@ const StyledVisualization = styled.fieldset`
   }
 `
 
-const RadioButton = (name, text, value, checked) => {
-  // console.log("value:", value, "checked:", checked)
-  return (
-    <label
-      htmlFor={value}
-      key={value}
-    >
-      <input
-        type="radio"
-        name={name}
-        id={value}
-        value={value}
-        defaultChecked={!!checked}
-      />
-      <span>{text}</span>
-    </label>
-  )
-}
 
 
 const Visualization = ({ _id, visualization }) => {
@@ -46,6 +29,7 @@ const Visualization = ({ _id, visualization }) => {
     const visualization = event.target.value
     setVisualization.call({ _id, visualization })
   }
+
 
   const getRadioSet = () => {
     buttons = [
@@ -65,8 +49,10 @@ const Visualization = ({ _id, visualization }) => {
     return buttons
   }
 
+
   const radioSet = getRadioSet()
 
+  
   return (
     <StyledVisualization
       onChange={applySelection}
@@ -75,6 +61,7 @@ const Visualization = ({ _id, visualization }) => {
     </StyledVisualization>
   )
 }
+
 
 
 export default Visualization

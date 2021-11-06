@@ -1,5 +1,5 @@
 /**
- * /imports/api/collections/methods/frame.js
+ * /client/ui/components/frame/methods.js
  */
 
 import { Meteor } from 'meteor/meteor'
@@ -48,38 +48,34 @@ export const getPaintings = {
 
 
 
-export const setCentreLock = {
-  name: "frame.setCentreLock"
+export const setAnchorPoint = {
+  name: "frame.setAnchorPoint"
 
-, call(centreLockData, callback) {
+, call(anchorPointData, callback) {
     const options = {
       returnStubValue: true
     , throwStubExceptions: true
     }
 
-    Meteor.apply(this.name, [centreLockData], options, callback)
+    Meteor.apply(this.name, [anchorPointData], options, callback)
   }
 
-, validate(centreLockData) {
-    const centreSchema = new SimpleSchema({
-      centreH: Number
-    , centreV: Number
-    })
-
+, validate(anchorPointData) {
     const _strSchema = new SimpleSchema({
      _str: String,
     });
 
     new SimpleSchema({
      _id:    _strSchema
-   , centre: centreSchema
-    }).validate(centreLockData)
+     , anchorX: Number
+     , anchorY: Number
+    }).validate(anchorPointData)
   }
 
-, run(centreLockData) {
-    const { _id, centre } = centreLockData
+, run(anchorPointData) {
+    const { _id, anchorX, anchorY } = anchorPointData
     const select = { _id }
-    const update = { $set: { centre }}
+    const update = { $set: { anchorX, anchorY }}
 
     const result = Groups.update(select, update)
 
@@ -99,7 +95,7 @@ export const setCentreLock = {
 
 const methods = [
   getPaintings
-, setCentreLock
+, setAnchorPoint
 ]
 
 

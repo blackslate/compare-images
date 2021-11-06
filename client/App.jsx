@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
-import { preloadCollections } from '../tools/generic/preloadCollections.js';
+import { preloadCollections } from '/imports/tools/generic/preloadCollections.js';
 import { debounce } from '/imports/tools/generic/utilities'
-import Splash from './components/splash.jsx'
-import Error from './components/error.jsx'
-import Viewer from './components/Viewer.jsx'
+import Splash from './ui/splash.jsx'
+import Error from './ui/error.jsx'
+import Viewer from './ui/viewer/Viewer.jsx'
 
-// console.log("Frame:", Frame)
-// <<< HACK
-// Use default (one and only) _id from Paintings collection until we
-// have a reason and a means to add other paintings and their copies
-// HACK>>>
-Session.set("group", "test")
+console.log("Viewer:", Viewer)
+
 const FRAME_RATIO = 0.8
 const BORDER_RATIO = (1 - FRAME_RATIO) / 2
 
@@ -21,7 +17,7 @@ const views = {
 }
 
 
-export const App = () => {
+const App = () => {
   const getPortSize = () => {
     const width = document.documentElement.clientWidth
     const height = document.documentElement.clientHeight
@@ -76,3 +72,7 @@ export const App = () => {
     </div>
   )
 };
+
+
+
+export default App

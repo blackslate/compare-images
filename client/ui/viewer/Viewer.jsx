@@ -1,5 +1,5 @@
 /**
- * /imports/ui/components/frame/Frame.jsx
+ * /client/ui/viewer/Viewer.jsx
  *
  * This script imports the Core and Tracker classes from the deck/
  * folder, extends the classes and overwrites any methods as necessary
@@ -10,8 +10,8 @@
 
  import { withTracker } from 'meteor/react-meteor-data'
 
- import Core from './deck/FrameCore'
- import Tracker from './deck/FrameTracker'
+ import Core from './deck/ViewerCore'
+ import Tracker from './deck/ViewerTracker'
  
  
  

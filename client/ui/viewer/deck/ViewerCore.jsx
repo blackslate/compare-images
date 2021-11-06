@@ -1,12 +1,12 @@
 /**
- * imports/ui/components/Viewer.jsx
+ * client/ui/Viewer.jsx
  */
 
 
 import React, { Component } from 'react';
 
-import Frame from './frame/Frame.jsx'
-import Controls from './controls/Controls.jsx'
+import Frame from '../../frame/Frame.jsx'
+import Controls from '../../controls/Controls.jsx'
 import styled from 'styled-components'
 
 

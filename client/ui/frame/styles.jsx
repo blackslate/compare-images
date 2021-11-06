@@ -10,13 +10,15 @@ import styled from 'styled-components'
 export const StyledFrame = styled.div`
   position: relative;
   ${props => `
-    width: ${props.width}px;
-    height: ${props.height}px;
+    width: ${props.frameWidth}px;
+    height: ${props.frameHeight}px;
     border: ${props.border}px solid black;
+    overflow: auto;
   `}
 
   & img.original {
-    width: 100%;
+    width: ${props => props.frameWidth}px;
+    height: ${props => props.frameHeight}px;
   }
 
   & img.copy {
