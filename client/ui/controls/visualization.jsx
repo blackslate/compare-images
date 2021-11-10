@@ -1,5 +1,5 @@
 /**
- * imports/ui/components/controls/visualisation.jsx
+ * client/ui/controls/visualisation.jsx
  */
 
 
@@ -24,10 +24,11 @@ const StyledVisualization = styled.fieldset`
 
 
 
-const Visualization = ({ _id, visualization }) => {
+const Visualization = ({ group_id, visualization }) => {
+
   const applySelection = (event) => {
     const visualization = event.target.value
-    setVisualization.call({ _id, visualization })
+    setVisualization.call({ group_id, visualization })
   }
 
 
@@ -40,10 +41,10 @@ const Visualization = ({ _id, visualization }) => {
     , { text: "Show copy", value: "show" }
     ].map( buttonData => {
       const { text, value } = buttonData
-      const checked = value === visualization
+      const checked = (value === visualization)
       const name = "visualization"
 
-      return RadioButton(name, text, value, checked)
+      return RadioButton(name, text, value, checked, applySelection)
     })
 
     return buttons
@@ -54,9 +55,7 @@ const Visualization = ({ _id, visualization }) => {
 
   
   return (
-    <StyledVisualization
-      onChange={applySelection}
-    >
+    <StyledVisualization>
       {radioSet}
     </StyledVisualization>
   )

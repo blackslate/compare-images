@@ -1,5 +1,5 @@
 /**
- * /imports/ui/components/controls/methods.js
+ * /imports/api/methods/controls.js
  */
 
 import { Meteor } from 'meteor/meteor'
@@ -28,13 +28,13 @@ export const setVisualization = {
     });
 
     new SimpleSchema({
-      _id:           _strSchema
+      group_id:           _strSchema
     , visualization: { type: String }
     }).validate(setVisualizationData)
   }
 
 , run(setVisualizationData) {
-    const { _id, visualization } = setVisualizationData
+    const { group_id: _id, visualization } = setVisualizationData
     const select = { _id }
     const update = { $set: { visualization }}
     Groups.update(select, update)

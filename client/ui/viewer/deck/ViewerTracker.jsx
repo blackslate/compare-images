@@ -5,8 +5,60 @@
 
 
 import { Session } from 'meteor/session'
+import { debounce } from '/imports/tools/generic/utilities'
 import collections from '/imports/api/collections/publisher'
 const { Groups, Paintings } = collections
+
+
+// <<< Functions to make app responsive
+const FRAME_RATIO = 0.8
+const BORDER_RATIO = (1 - FRAME_RATIO) / 2
+
+
+const setPortAndBorderSizes = () => {
+  const portWidth = document.documentElement.clientWidth
+  const portHeight = document.documentElement.clientHeight
+  const border = Math.min(portWidth, portHeight) * BORDER_RATIO
+
+  Session.set("portWidth", portWidth)
+  Session.set("portHeight", portHeight)
+  Session.set("border", border)
+}
+
+
+const updatePortSize = debounce(() => {
+  setPortAndBorderSizes()
+})
+
+
+window.onresize = updatePortSize
+setPortAndBorderSizes()
+
+
+function getZoomData ({ width, height }, { portWidth, portHeight }) {
+  const imageRatio = width / height
+  const portRatio = portWidth / portHeight
+
+  if (imageRatio > portRatio) {
+    // Use maximum width and limit height
+    frameWidth = portWidth * FRAME_RATIO,
+    frameHeight = frameWidth / imageRatio
+  } else {
+    // Use maximum height and limit width
+    frameHeight = portHeight * FRAME_RATIO
+    frameWidth = frameHeight * imageRatio
+  }
+
+  const fitZoom = frameWidth / width
+
+  return {
+    frameHeight
+  , frameWidth
+  , fitZoom
+  }
+}
+
+// Functions to make app responsive >>>
 
 
 
@@ -74,13 +126,22 @@ export default class ViewerTracker{
     paintingData.copyData = paintingData.copies[copy]
 
     const sessionData = {
-      fitZoom: Session.get("minZoom") || 0.5
+      portWidth: Session.get("portWidth")
+    , portHeight: Session.get("portHeight")
+    , border: Session.get("border")
     }
 
-    const props = { ...paintingData, ...groupData, ...sessionData }
+    const zoomData = getZoomData(paintingData, sessionData)
+
+    const props = {
+      ...paintingData
+    , ...groupData
+    , ...sessionData
+    , ...zoomData
+    }
     delete props._id
 
-    // console.log("props:", props)
+    console.log("props:", props)
 
     return props
   }

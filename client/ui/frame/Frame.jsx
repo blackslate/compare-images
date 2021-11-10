@@ -56,7 +56,9 @@ const Frame = (props) => {
   // , copyist: ""
   // , created: 2011
   // , custom_areas: [{…}]
-  // , frameRatio: 0.8
+  // , fitZoom: 0.32818280739934713
+  // , frameHeight: 604.1845484221981
+  // , frameWidth: 603.2
   // , group: "test"
   // , group_id: ObjectID {_str: '617eb50e435874f0cd9a9028'}
   // , height: 1841
@@ -64,7 +66,8 @@ const Frame = (props) => {
   // , name: "revel"
   // , painting_id: ObjectID {_str: '617a8023a674a75b1c657b5d'}
   // , pilot: 0
-  // , portSize: {width: 785, height: 862, ratio: 0.9106728538283063}
+  // , portWidth: 785
+  // , portHeight: 862
   // , title: "Revel in the Wild Joy"
   // , visualization: "invert"
   // , width: 1838
@@ -72,10 +75,10 @@ const Frame = (props) => {
   // , zoom_rect: {left: 0, right: 0, top: 0, bottom: 0}
   // }
 
-  const { portSize, frameRatio, border         // Set in App.jsx/resize
+  const { border, frameWidth, frameHeight      //
         , name, title, width, height, copyData // Read from Paintings
         , group_id                             // Read from Groups
-        , anchorX, anchorY
+        , anchorX, anchorY, zoom, fitZoom
         , visualization
         } = props
 
@@ -84,39 +87,12 @@ const Frame = (props) => {
   const copyAlt = title + " (Dafen copy)"
 
   const [ centring, setCentring] = useState(false)
-  const [ zoom, setZoom ] = useState(2)
   const [ scroll, setScroll ] = useState({ x: 0, y: 0 })
   
-  let dimensions = getDimensions()
-  let sightData = getSightData(dimensions)
+  let sightData = getSightData()
 
 
-
-  function getDimensions () {
-    const imageRatio = width / height
-
-    if (imageRatio > portSize.ratio) {
-      // Use maximum width and limit height
-      frameWidth = portSize.width * frameRatio,
-      frameHeight = frameWidth / imageRatio
-    } else {
-      // Use maximum height and limit width
-      frameHeight = portSize.height * frameRatio
-      frameWidth = frameHeight * imageRatio
-    }
-  
-
-    const displayWidth = 0
-
-    return {
-      frameHeight
-    , frameWidth
-    , border
-    }
-  }
-
-
-  function getSightData({ frameWidth, frameHeight }) {
+  function getSightData() {
     const size = Math.min(frameWidth, frameHeight) * SIGHT_RATIO 
     const offset = size / 2
     const left = frameWidth * anchorX - offset
@@ -201,8 +177,11 @@ const Frame = (props) => {
     return (
       <StyledFrame
         id="frame"
-        {...dimensions}
         {...sightData}
+        frameHeight={frameHeight}
+        frameWidth={frameWidth}
+        border={border}
+        fitZoom={fitZoom}
       >
         <img
           className="original"
