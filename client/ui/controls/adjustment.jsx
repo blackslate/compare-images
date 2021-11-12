@@ -11,7 +11,11 @@ import { Session } from 'meteor/session'
 import React, { useState } from 'react';
 import styled from 'styled-components'
 import RadioButton from './radiobutton'
-import { shareZoom, shareScroll } from '/imports/api/methods/broker.js';
+import {
+  shareLockAdjust
+, shareZoom
+, shareScroll
+} from '/imports/api/methods/controls.js';
 
 
 // console.log("Session:", Session)
@@ -27,7 +31,7 @@ const StyledAdjustment = styled.fieldset`
 `
 
 
-const Adjustment = ({ _id, centre, zoom, fitZoom, adjust }) => {
+const Adjustment = ({ group_id, centre, zoom, fitZoom, adjust }) => {
   const minZoom = Math.min(fitZoom, 1)
   const step = 0.05
   const notch = 10
@@ -112,12 +116,44 @@ const Adjustment = ({ _id, centre, zoom, fitZoom, adjust }) => {
   const radioSet = getRadioSet()
 
 
+  const setLockAdjust = (event) => {
+    adjust = !adjust
+
+    const options = {
+      group_id
+    , adjust
+    }
+
+    shareLockAdjust.call(options)
+  }
+
+  const LockAdjustSlider = () => {
+    return (
+      <label htmlFor="lockAdjust">
+        Lock
+        <input
+          id="lockAdjust"
+          className="two-way"
+          type="checkbox"
+          checked={adjust}
+          onChange={setLockAdjust}
+        />
+        <span className="slot">
+          <span className="slider" />
+        </span>
+        Adjust
+      </label>
+    )
+  }
+
+
   return (
     <StyledAdjustment>
       <Zoom
         min={minZoom}
         zoom={zoom}
       />
+      <LockAdjustSlider />
       {radioSet}
     </StyledAdjustment>
   )

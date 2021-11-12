@@ -17,10 +17,10 @@ const App = () => {
 
   preloadCollections.then(
     () => setView("Viewer")
-  ).catch(
+  ).catch(error => {
     console.log("Error in preloadCollections:", error)
-    error => setView("Error")
-  )
+    setView("Error")
+  })
 
   const View = views[view]
 

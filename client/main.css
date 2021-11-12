@@ -3,3 +3,72 @@ body {
   margin: 0;
   font-family: sans-serif;
 }
+
+
+/* SLIDER-TYPE CHECKBOXES // // // // // // // SLIDER-TYPE CHECKBOXES */
+
+label {
+  display: block;
+}
+
+input[type=checkbox] {
+  width: 0px;
+  height: 0px;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+input[type=checkbox] ~ span {
+  display: inline-block;
+  position: relative;
+  --size: 0.6em;
+  --onColor: rgb(255,255,255);
+  --offColor: rgba(255,255,255,0.5);
+  --dullColor: rgba(255,255,255,0.125);
+  margin: 0 0.5em;
+  width: calc(2 * var(--size));
+  height: var(--size);
+  border: 0.02em solid var(--offColor);
+  border-radius: var(--size);
+  background-color: var(--dullColor);
+}
+
+input[type=checkbox]:checked ~ span,
+input[type=checkbox].two-way ~ span {
+  border-color: var(--onColor);
+  background-color: transparent;
+}
+
+input[type=checkbox] ~ span  span{
+  display: inline-block;
+  position: absolute;
+  margin: 0;
+  width: var(--size);
+  height: var(--size);
+  left: 0;
+  top: 0;
+
+  background-color: var(--offColor);
+  border-radius: var(--size);
+  transition: all 0.25s;
+}
+
+input[type=checkbox].two-way ~ span span {
+  background-color: var(--onColor);
+}
+
+input[type=checkbox].reverse ~ span span {
+  left: var(--size);
+}
+
+
+input[type=checkbox]:checked ~ span  span {
+  left: var(--size);
+  background-color: var(--onColor);
+}
+
+input[type=checkbox].reverse:checked ~ span  span {
+  left: 0;
+}

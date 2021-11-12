@@ -24,6 +24,7 @@ const Frame = (props) => {
   // console.log("Frame props:", props)
   
   // { activeCustomArea: -1
+  // , adjust: true
   // , anchorX: 0.5
   // , anchorY: 0.5
   // , artist: "Andy Kehoe"
