@@ -80,9 +80,45 @@ export const shareLockAdjust = {
 
 
 
+export const shareAdjustAction = {
+  name: "controls.shareAdjustAction"
+
+, call(shareAdjustActionData, callback) {
+    const options = {
+      returnStubValue: true
+    , throwStubExceptions: true
+    }
+
+    Meteor.apply(this.name, [shareAdjustActionData], options, callback)
+  }
+
+, validate(shareAdjustActionData) {
+    const _strSchema = new SimpleSchema({
+     _str: String,
+    });
+
+    new SimpleSchema({
+      group_id: _strSchema
+    , adjustAction:   { type: String }
+    }).validate(shareAdjustActionData)
+  }
+
+, run(shareAdjustActionData) {
+    const { group_id: _id, adjustAction } = shareAdjustActionData
+    const select = { _id }
+    const update = { $set: { adjustAction }}
+    Groups.update(select, update)
+
+    console.log
+  }
+}
+
+
+
 const methods = [
   setVisualization
-, shareLockAdjust
+  , shareLockAdjust
+  , shareAdjustAction
 ]
 
 

@@ -141,7 +141,7 @@ export default class ViewerTracker{
     }
     delete props._id
 
-    console.log("props:", props)
+    // console.log("props:", props)
 
     return props
   }

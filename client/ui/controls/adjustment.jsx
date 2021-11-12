@@ -1,6 +1,6 @@
 /**
  * imports/ui/components/controls/deck/adjustment.jsx
- * 
+ *
  * Radio buttons for Move or Stretch
  * Slider for Zoom
  * Selection of selected areas
@@ -13,6 +13,7 @@ import styled from 'styled-components'
 import RadioButton from './radiobutton'
 import {
   shareLockAdjust
+, shareAdjustAction
 , shareZoom
 , shareScroll
 } from '/imports/api/methods/controls.js';
@@ -31,7 +32,14 @@ const StyledAdjustment = styled.fieldset`
 `
 
 
-const Adjustment = ({ group_id, centre, zoom, fitZoom, adjust }) => {
+const Adjustment = ({
+    group_id
+  , centre
+  , zoom
+  , fitZoom
+  , adjust
+  , adjustAction
+  }) => {
   const minZoom = Math.min(fitZoom, 1)
   const step = 0.05
   const notch = 10
@@ -49,7 +57,7 @@ const Adjustment = ({ group_id, centre, zoom, fitZoom, adjust }) => {
         zoom = Math.max(fitZoom, zoom - tweak)
         if (zoom === fitZoom) {
           slider.value = zoom + tweak / 2
-        }      
+        }
       }
     } else if (zoom > 1) {
       zoom = zoom = Math.max(1, zoom - tweak)
@@ -98,16 +106,28 @@ const Adjustment = ({ group_id, centre, zoom, fitZoom, adjust }) => {
   }
 
 
+  const setAdjustAction = (event) => {
+    adjustAction = event.target.value
+
+    const options = {
+      group_id
+    , adjustAction
+    }
+
+    shareAdjustAction.call(options)
+  }
+
+
   const getRadioSet = () => {
     buttons = [
       { text: "Move", value: "move" }
     , { text: "Stretch", value: "stretch" }
     ].map( buttonData => {
       const { text, value } = buttonData
-      const checked = value === adjust
-      const name = "adjust"
+      const checked = value === adjustAction
+      const name = "adjustAction"
 
-      return RadioButton(name, text, value, checked)
+      return RadioButton(name, text, value, checked, setAdjustAction)
     })
 
     return buttons
