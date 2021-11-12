@@ -22,7 +22,7 @@ const SIGHT_RATIO = 0.1
 
 const Frame = (props) => {
   // console.log("Frame props:", props)
-  
+
   // { activeCustomArea: -1
   // , adjust: true
   // , anchorX: 0.5
@@ -41,7 +41,7 @@ const Frame = (props) => {
   //     , stretchRight:  0
   //     , stretchTop:    0
   //     }
-  //   ] 
+  //   ]
   // , copy: 0
   // , copyData: {
   //     file: "20211015101430.jpg"
@@ -80,7 +80,7 @@ const Frame = (props) => {
         , name, title, width, height, copyData // Read from Paintings
         , group_id                             // Read from Groups
         , anchorX, anchorY, zoom, fitZoom
-        , visualization
+        , visualization, adjust
         } = props
 
   const original = `${name}/original.jpg`
@@ -89,22 +89,6 @@ const Frame = (props) => {
 
   const [ centring, setCentring] = useState(false)
   const [ scroll, setScroll ] = useState({ x: 0, y: 0 })
-  
-  let sightData = getSightData()
-
-
-  function getSightData() {
-    const size = Math.min(frameWidth, frameHeight) * SIGHT_RATIO 
-    const offset = size / 2
-    const left = frameWidth * anchorX - offset
-    const top  = frameHeight * anchorY - offset
-
-    return {
-      size
-    , left
-    , top
-    }
-  }
 
 
   const startDraggingSight = (event) => {
@@ -117,7 +101,7 @@ const Frame = (props) => {
     let dragX
     let dragY
 
-    // 
+    //
     let {
       left:   xMin
     , top:    yMin
@@ -154,8 +138,8 @@ const Frame = (props) => {
         target.style.removeProperty("top")
       }, 100)
 
-      const anchorX = (dragX - xMin) / dimensions.frameWidth
-      const anchorY = (dragY - yMin) / dimensions.frameHeight
+      const anchorX = (dragX - xMin) / frameWidth
+      const anchorY = (dragY - yMin) / frameHeight
 
       setAnchorPoint.call({
         _id: group_id
@@ -168,12 +152,41 @@ const Frame = (props) => {
   }
 
 
+  function getSightData() {
+    if (!adjust) {
+      return {}
+    }
+
+    const size = Math.min(frameWidth, frameHeight) * SIGHT_RATIO
+    const offset = size / 2
+    const left = frameWidth * anchorX - offset
+    const top  = frameHeight * anchorY - offset
+    const sight = (
+      <Sight
+        className="sight"
+        fill="#000"
+        stroke="#fff"
+        drag={startDraggingSight}
+      />
+    )
+
+    return {
+      sight
+    , size
+    , left
+    , top
+    }
+  }
+
+
   const getFrame = () => {
     const copyClass = "copy "
                     + ( centring
                       ? "hide"
                       : visualization
                       )
+    let { sight,  ...sightData } = getSightData()
+
 
     return (
       <StyledFrame
@@ -194,12 +207,7 @@ const Frame = (props) => {
           src={compare}
           alt={copyAlt}
         />
-        <Sight
-          className="sight"
-          fill="#000"
-          stroke="#fff"
-          drag={startDraggingSight}
-        />
+        {sight}
       </StyledFrame>
     )
   }

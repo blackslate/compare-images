@@ -126,8 +126,17 @@ const Adjustment = ({
       const { text, value } = buttonData
       const checked = value === adjustAction
       const name = "adjustAction"
+      const disabled = !adjust
+      const options = {
+        name
+      , text
+      , value
+      , checked
+      , disabled
+      , onChange: setAdjustAction
+      }
 
-      return RadioButton(name, text, value, checked, setAdjustAction)
+      return RadioButton(options)
     })
 
     return buttons

@@ -24,7 +24,7 @@ const StyledVisualization = styled.fieldset`
 
 
 
-const Visualization = ({ group_id, visualization }) => {
+const Visualization = ({ group_id, visualization, adjust }) => {
 
   const applySelection = (event) => {
     const visualization = event.target.value
@@ -43,8 +43,15 @@ const Visualization = ({ group_id, visualization }) => {
       const { text, value } = buttonData
       const checked = (value === visualization)
       const name = "visualization"
+      const options = {
+        name
+      , text
+      , value
+      , checked
+      , onChange: applySelection
+      }
 
-      return RadioButton(name, text, value, checked, applySelection)
+      return RadioButton(options)
     })
 
     return buttons

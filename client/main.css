@@ -72,3 +72,9 @@ input[type=checkbox]:checked ~ span  span {
 input[type=checkbox].reverse:checked ~ span  span {
   left: 0;
 }
+
+/* RADIO BUTTONS */
+input[type=radio]:disabled,
+  input[type=radio]:disabled ~ span {
+    opacity: 0.25;
+}

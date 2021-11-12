@@ -6,17 +6,24 @@
 import React from 'react';
 
 
-const RadioButton = (name, text, value, checked, applySelection) => {
+const RadioButton = ({
+  name
+, text
+, value
+, checked
+, disabled
+, onChange
+}) => {
   /**
    * <<< QUIRKAROUND
-   * Although applySelection is a pointer to a function that will be
-   * used by onChange, if it is used directly as the value for onChange,
+   * Although onChange is a pointer to a function that will be used
+   * by onChange, if it is used directly as in the radiobutton input
    * React officiously posts a message in the Console that no onChange
    * handler is provided. This unnecessary level of indirection is used
    * to keep React quiet.
    */
   const treatChange = (event) => {
-    applySelection(event)
+    onChange(event)
   }
   /* QUIRKAROUND >>> */
 
@@ -32,6 +39,7 @@ const RadioButton = (name, text, value, checked, applySelection) => {
         id={value}
         value={value}
         checked={!!checked}
+        disabled={!!disabled}
         onChange={treatChange}
       />
       <span>{text}</span>
